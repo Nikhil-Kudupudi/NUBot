@@ -1,6 +1,6 @@
 pandas
 numpy
-flask
+Flask
 gunicorn
 flask_restx
 python-dotenv

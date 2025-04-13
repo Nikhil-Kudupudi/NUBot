@@ -6,9 +6,9 @@ from dotenv import load_dotenv
 
 
 from src.utils.exception import CustomException
-import sys
+
 import os
-from src.dataflow.rag_model import generateResponse
+from src.dataflow.rag_model import generate_response
 from flask_cors import CORS # type: ignore
 load_dotenv(override=True)
 
@@ -40,7 +40,8 @@ class Main(Resource):
             logging.info("Get api called")
             query=args['query']
             logging.info("response function called")
-            response=generateResponse(query)
+            
+            response=generate_response(query)
             logging.info("Response generated successfully")
             return response
         except Exception as e:

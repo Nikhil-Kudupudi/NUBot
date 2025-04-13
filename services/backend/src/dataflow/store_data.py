@@ -1,4 +1,4 @@
-from google.cloud.storage import Client, transfer_manager
+from google.cloud.storage import Client
 import os
 from dotenv import load_dotenv
 load_dotenv(override=True)
@@ -10,13 +10,7 @@ GOOGLE_APPLICATION_CREDENTIALS=os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
 def get_blob_from_bucket():
     storage_client = Client()
     bucket = storage_client.bucket(BUCKET_NAME)
-    blobs = bucket.list_blobs()
-    for blob in blobs:
-    # Get the blob object
-        blob = bucket.blob(blob.name)
-    # Download the blob content as text (if the file is a text-based file like JSON)
-        content = blob.download_as_text()
-
+    return bucket
 
 def upload_many_blobs_with_transfer_manager(
     workers=8

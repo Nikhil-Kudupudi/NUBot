@@ -76,4 +76,5 @@ def upload_faiss_index_to_bucket():
         file_path = os.path.join(source_directory, filename)
         blob = bucket.blob(f"{FAISS_INDEX_FOLDER}/{filename}")  # Create a blob (object) in the bucket
         blob.upload_from_filename(file_path)  # Upload the file
+        print(f"Uploaded {filename} to {bucket.name}")
 

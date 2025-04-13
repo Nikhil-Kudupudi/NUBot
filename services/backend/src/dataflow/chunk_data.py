@@ -1,55 +1,75 @@
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from datasets import load_dataset
+import json
 import os
-from langchain_community.vectorstores import FAISS
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_core.documents import Document
-import os
+import pandas as pd
+import google.cloud.storage as storage
 from dotenv import load_dotenv
-from google.cloud.storage import Client
+from langchain.schema import Document
+import json
+from uuid import uuid4
+import nltk
+from nltk.tokenize import sent_tokenize
+import faiss
 
 from store_data import upload_faiss_index_to_bucket
+nltk.download('punkt')
 load_dotenv(override=True)
-BUCKET_NAME= os.getenv('BUCKET_NAME')
-GOOGLE_APPLICATION_CREDENTIALS=os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-RAW_DATA_FOLDER= os.getenv('RAW_DATA_FOLDER')
-def chunk_data():
-    # Load all JSON files from a directory
-    try:
-        storage_client = Client()
-        bucket = storage_client.bucket(BUCKET_NAME)
-# List files in the bucket
-        blobs = bucket.list_blobs(prefix=RAW_DATA_FOLDER)
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+BUCKET_NAME = os.getenv("BUCKET_NAME")
+RAW_DATA_FOLDER = os.getenv("RAW_DATA_FOLDER")
+def fetch_data( ):
+    client = storage.Client()
+    bucket = client.bucket(BUCKET_NAME)
+    blobs = bucket.list_blobs(prefix=RAW_DATA_FOLDER)
+    result=[]
+    for blob in blobs:
+        content=blob.download_as_text()
+        content=json.loads(content) 
+        result.append(content)
 
-# Collect the GCS paths for all JSON files (adjust based on your file types)
-        gcs_files = [f"gs://{BUCKET_NAME}/{blob.name}" for blob in blobs if blob.name.endswith(".json")]
+    with open("data.json", "w") as f:
+        json.dump(result, f)
+    return 
 
-        dataset = load_dataset("json", data_files=gcs_files,split="train")
-        docs = [ Document(
-                page_content=item['text'],
-                metadata={"url": item['url'], "title": item['title']}
-            )for item in dataset if "text" in item] 
+def chunk_data( ):
+    with open("data.json", "r") as f:
+        data=json.load(f)
+    for item in data:
+        text=item["text"]
+        sentences = sent_tokenize(text)
+    
+    chunks = []
+    for i in range(0, len(sentences), 2):
+        chunk = ' '.join(sentences[i:i + 2])
+        chunks.append(chunk)
+    return chunks
 
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-        all_splits = text_splitter.split_documents(docs)
-        # Initialize the embedding model
-        model_name = "sentence-transformers/all-MiniLM-L6-v2"
-        model_kwargs = {'device': 'cpu'}
-        encode_kwargs = {'normalize_embeddings': False}
-        embeddings= HuggingFaceEmbeddings(model_name=model_name,
-                                          model_kwargs=model_kwargs,
-                                          encode_kwargs=encode_kwargs)
-        vector_store = FAISS.from_documents(all_splits, embeddings)
-        # Convert documents into FAISS-compatible format
-        _ = vector_store.add_documents(documents=all_splits)
-        # Save FAISS index
-        vector_store.save_local('faiss_index')
-        upload_faiss_index_to_bucket()
-        return 
-    except Exception as e:
-        raise Exception(e)
+def create_new_index_with_local_embeddings():
+    """Create a new vector store using local HuggingFace embeddings"""
+    # Load document chunks
+    with open("data.json", "r") as f:
+        chunks = json.load(f)
+    
+    # Create Document objects
+    documents = [Document(page_content=chunk['text'], metadata={'source': chunk['url']}) for chunk in chunks]
+    
+    # Create vector store
+    print(f"Creating new vector store with {len(documents)} documents...")
+    vector_store = FAISS.from_documents(documents, embeddings)
+    
+    # Save to a new location
+    vector_store.save_local("faiss_index")
+    print("Saved new vector store to faiss_index/")
+    
+    return vector_store
 
 
-if __name__=="__main__":
-    chunk_data()
+
+
+if __name__ == "__main__":
+    fetch_data()
+    chunks=chunk_data()
+    print("chunking done")
+    create_new_index_with_local_embeddings()
     upload_faiss_index_to_bucket()
