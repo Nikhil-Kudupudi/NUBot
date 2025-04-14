@@ -5,7 +5,8 @@ load_dotenv(override=True)
 BUCKET_NAME= os.getenv('BUCKET_NAME')
 RAW_DATA_FOLDER= os.getenv('RAW_DATA_FOLDER')
 FAISS_INDEX_FOLDER= os.getenv('FAISS_INDEX_FOLDER')
-GOOGLE_APPLICATION_CREDENTIALS=os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+from google.auth import default
+credentials, project = default()
 
 def get_blob_from_bucket():
     storage_client = Client()

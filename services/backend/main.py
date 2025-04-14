@@ -49,6 +49,6 @@ class Main(Resource):
            
 
 if __name__=="__main__":
-    PORT=os.getenv('PORT')
-    HOST=os.getenv('HOST')
-    app.run(host=HOST,port=PORT,debug=True)
+    PORT=os.getenv('PORT', 8080)
+
+    app.run(host='0.0.0.0',port=PORT,debug=True)

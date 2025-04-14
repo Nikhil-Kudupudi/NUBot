@@ -11,7 +11,8 @@ from google.cloud.storage import Client
 from dataflow.store_data import upload_faiss_index_to_bucket
 load_dotenv(override=True)
 BUCKET_NAME= os.getenv('BUCKET_NAME')
-GOOGLE_APPLICATION_CREDENTIALS=os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+from google.auth import default
+credentials, project = default()
 RAW_DATA_FOLDER= os.getenv('RAW_DATA_FOLDER')
 def chunk_data():
     # Load all JSON files from a directory

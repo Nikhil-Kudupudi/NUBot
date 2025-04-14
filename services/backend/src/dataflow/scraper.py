@@ -13,7 +13,21 @@ load_dotenv(override=True)
 BASE_URL = os.getenv('BASE_URL')
 MAX_DEPTH = int(os.getenv('MAX_DEPTH'))             # Maximum recursion depth (base URL is depth 0)
 CONCURRENT_REQUESTS = int(os.getenv('CONCURRENT_REQUESTS'))  # Maximum number of concurrent requests
-GOOGLE_APPLICATION_CREDENTIALS =os.getenv('GOOGLE_APPLICATION_CREDENTIALS ')
+
+from google.auth import default
+from google.oauth2 import service_account
+
+# Try to get credentials - works in both Docker and Cloud Run
+try:
+    # First try Application Default Credentials (works in Cloud Run)
+    credentials, project = default()
+except Exception:
+    # Fall back to explicit credentials file (for Docker)
+    credentials_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+    if credentials_path:
+        credentials = service_account.Credentials.from_service_account_file(credentials_path)
+    else:
+        raise Exception("No credentials available")
 # Create folder for JSON data
 DATA_FOLDER = "scraped_data"
 if not os.path.exists(DATA_FOLDER):
