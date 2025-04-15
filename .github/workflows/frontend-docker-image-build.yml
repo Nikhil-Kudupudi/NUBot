@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - "**"
+    paths:
+      - 'services/frontend/**'
 
 jobs:
   frontend_build:
@@ -41,4 +43,4 @@ jobs:
             --allow-unauthenticated \
             --memory 1Gi \
             --timeout 1800s \
-            --set-env-vars "API_URL=https://backend-service-273412-default.run.app/NuBot"
+            --set-env-vars "API_URL=https://backend-service-273412-default.run.app/NuBot/"
