@@ -38,7 +38,8 @@ def safe_filename(url):
     parsed = urlparse(url)
     path = parsed.path.strip('/') or 'index'
     filename = re.sub(r'[^A-Za-z0-9_\-]', '_', path) + ".json"
-    return os.path.join(DATA_FOLDER, filename)
+    url_hash = hashlib.md5(url.encode()).hexdigest()[:8]
+    return os.path.join(DATA_FOLDER, f"{filename}_{url_hash}.json")
 
 async def fetch(session, url, semaphore):
     """Fetch the content of the URL asynchronously."""
