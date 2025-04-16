@@ -44,17 +44,18 @@ def get_or_create_experiment(experiment_name):
         return None
 
 # Replace it with:
-experiment_id = get_or_create_experiment("rag_experiment")
+
 def ensure_experiment(name):
     try:
         mlflow.set_experiment(name)
-    except RestException:
+    except Exception as e:
         mlflow.create_experiment(name)
         mlflow.set_experiment(name)
 
 ensure_experiment("rag_experiment")
 # mlflow.set_experiment("rag_experiment")
 mlflow.set_tag("description", "RAG pipeline with Mistral AI model")
+# experiment_id = get_or_create_experiment("rag_experiment")
 if not os.environ.get("MISTRAL_API_KEY"):
   os.environ["MISTRAL_API_KEY"] = getpass.getpass("Enter API key for Mistral AI: ")
 
