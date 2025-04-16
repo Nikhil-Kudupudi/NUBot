@@ -25,7 +25,7 @@ MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
 FAISS_INDEX_FOLDER= os.getenv('FAISS_INDEX_FOLDER')
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)  # Remote MLflow Server
 # Where you currently have this line:
-mlflow.set_experiment("rag_experiment")
+
 def get_or_create_experiment(experiment_name):
     try:
         experiment = mlflow.get_experiment_by_name(experiment_name)
@@ -45,8 +45,15 @@ def get_or_create_experiment(experiment_name):
 
 # Replace it with:
 experiment_id = get_or_create_experiment("rag_experiment")
-if not experiment_id:
-    raise ValueError("❌ Could not get or create a valid experiment ID. Aborting.")
+def ensure_experiment(name):
+    try:
+        mlflow.set_experiment(name)
+    except RestException:
+        mlflow.create_experiment(name)
+        mlflow.set_experiment(name)
+
+ensure_experiment("rag_experiment")
+# mlflow.set_experiment("rag_experiment")
 mlflow.set_tag("description", "RAG pipeline with Mistral AI model")
 if not os.environ.get("MISTRAL_API_KEY"):
   os.environ["MISTRAL_API_KEY"] = getpass.getpass("Enter API key for Mistral AI: ")
@@ -60,13 +67,20 @@ def get_llm():
 def get_prompt():
 # Define prompt for question-answering
     # Your prompt template
-    template = """Use the following pieces of context to answer the question at the end.
-If you don't know the answer, just say that you don't know, don't try to make up an answer.
-Use three sentences maximum and keep the answer as concise as possible.
-Always say "thanks for asking!" at the end of the answer.
+    template = """You are an expert assistant helping to answer questions based only on the given context.
+
+Instructions:
+- Use ONLY the context below to answer.
+- If the context does not contain the answer, say: "I don't know based on the available information."
+- Answer in 2-3 sentences, clearly and factually.
+- End your response with: "Thanks for asking!"
+
+Context:
 {context}
+
 Question: {question}
-Helpful Answer:"""
+
+Answer:"""
     custom_rag_prompt = PromptTemplate.from_template(template)
     return custom_rag_prompt
 
@@ -102,9 +116,9 @@ for blob in bucket.list_blobs(prefix=FAISS_INDEX_FOLDER):
 vector_store = FAISS.load_local(FAISS_INDEX_FOLDER, embeddings, allow_dangerous_deserialization=True)
 # Define application steps
 def retrieve(state: State):
-    with mlflow.start_run(nested=True, run_name="retrieval",experiment_id=experiment_id):
+    with mlflow.start_run(nested=True, run_name="retrieval"):
         start_time = time.time()
-        retrieved_docs = vector_store.similarity_search(state["question"])
+        retrieved_docs = vector_store.similarity_search(state["question"],k=10)
         retrieval_time = time.time() - start_time
     
         # Extract only metadata
@@ -123,7 +137,7 @@ llm = get_llm()
 # Initialize prompt once and store in a global variable
 prompt = get_prompt()
 def generate(state: State):
-    with mlflow.start_run(nested=True, run_name="generation",experiment_id=experiment_id):
+    with mlflow.start_run(nested=True, run_name="generation"):
         start_time = time.time()
         docs_content = "\n\n".join(doc.page_content for doc in state["context"])
         token_count = len(docs_content.split()) 
@@ -150,7 +164,7 @@ def generate(state: State):
 def generateResponse(query):
 # Compile application and test
     try:
-         with mlflow.start_run(run_name="RAG_Pipeline",experiment_id=experiment_id):
+         with mlflow.start_run(run_name="RAG_Pipeline"):
             mlflow.log_param("query", query)
             graph_builder = StateGraph(State).add_sequence([retrieve, generate])
             graph_builder.add_edge(START, "retrieve")
