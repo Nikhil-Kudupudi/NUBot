@@ -6,7 +6,7 @@ import json
 import re
 from urllib.parse import urljoin, urlparse
 from dotenv import load_dotenv
-
+import hashlib
 from store_data import upload_many_blobs_with_transfer_manager
 load_dotenv(override=True)
 # Configuration
