@@ -27,38 +27,27 @@ mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)  # Remote MLflow Server
 # Where you currently have this line:
 mlflow.set_experiment("rag_experiment")
 def get_or_create_experiment(experiment_name):
-
-    # Check if experiment exists
     try:
         experiment = mlflow.get_experiment_by_name(experiment_name)
-        
         if experiment is not None:
-            # Check if experiment is active (not deleted)
             if experiment.lifecycle_stage == "active":
-                print(f"Found active experiment '{experiment_name}' with ID: {experiment.experiment_id}")
+                print(f"✅ Found experiment: {experiment.experiment_id}")
                 return experiment.experiment_id
             else:
-                # Experiment exists but is deleted, create a new one with timestamp
-                new_name = f"{experiment_name}_{int(time.time())}"
-                experiment_id = mlflow.create_experiment(new_name)
-                print(f"Original experiment was deleted. Created new experiment '{new_name}' with ID: {experiment_id}")
-                return experiment_id
-        else:
-            # Create new experiment
-            experiment_id = mlflow.create_experiment(experiment_name)
-            print(f"Created new experiment '{experiment_name}' with ID: {experiment_id}")
-            return experiment_id
-    except Exception as e:
-        print(f"Error getting or creating experiment: {e}")
-        # Fallback - create a new experiment with timestamp
-        new_name = f"{experiment_name}_{int(time.time())}"
-        experiment_id = mlflow.create_experiment(new_name)
-        print(f"Created fallback experiment '{new_name}' with ID: {experiment_id}")
+                print(f"⚠️ Experiment exists but is deleted. Recreating...")
+        # Create a new experiment (either not found or was deleted)
+        experiment_id = mlflow.create_experiment(experiment_name)
+        print(f"🆕 Created experiment '{experiment_name}' with ID: {experiment_id}")
         return experiment_id
+    except Exception as e:
+        print(f"🚨 Exception during experiment creation: {e}")
+        return None
 
 # Replace it with:
 experiment_id = get_or_create_experiment("rag_experiment")
-mlflow.set_experiment_tag("description", "RAG pipeline with Mistral AI model")
+if not experiment_id:
+    raise ValueError("❌ Could not get or create a valid experiment ID. Aborting.")
+mlflow.set_tag("description", "RAG pipeline with Mistral AI model")
 if not os.environ.get("MISTRAL_API_KEY"):
   os.environ["MISTRAL_API_KEY"] = getpass.getpass("Enter API key for Mistral AI: ")
 
@@ -186,6 +175,10 @@ if __name__ == "__main__":
 
     query=input("generate query")
     response=generateResponse(query)
+    print("MLflow URI:", mlflow.get_tracking_uri())
+    print("Using experiment ID:", experiment_id)
+    print("Experiments available:", mlflow.search_experiments())
+
     print(response)
     #uncomment and enter prompts for model fairness and there is a limitation on api key
     # asyncio.run(checkModel_fairness())
