@@ -166,7 +166,7 @@ def generateResponse(query):
 # Compile application and test
     try:
         ensure_experiment("rag_experiment")
-         with mlflow.start_run(run_name="RAG_Pipeline"):
+        with mlflow.start_run(run_name="RAG_Pipeline"):
             mlflow.log_param("query", query)
             graph_builder = StateGraph(State).add_sequence([retrieve, generate])
             graph_builder.add_edge(START, "retrieve")
