@@ -165,6 +165,7 @@ def generate(state: State):
 def generateResponse(query):
 # Compile application and test
     try:
+        ensure_experiment("rag_experiment")
          with mlflow.start_run(run_name="RAG_Pipeline"):
             mlflow.log_param("query", query)
             graph_builder = StateGraph(State).add_sequence([retrieve, generate])
@@ -189,6 +190,7 @@ async def checkModel_fairness():
 if __name__ == "__main__":
 
     query=input("generate query")
+    ensure_experiment("rag_experiment")
     response=generateResponse(query)
     print("MLflow URI:", mlflow.get_tracking_uri())
     print("Using experiment ID:", experiment_id)
