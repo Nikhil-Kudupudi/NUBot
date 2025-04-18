@@ -68,7 +68,7 @@ def upload_many_blobs_with_transfer_manager(
 
     storage_client = Client()
     bucket = storage_client.bucket(BUCKET_NAME)
-    source_directory=os.path.join("..","..","scraped_data")
+    source_directory=os.path.join("scraped_data")
     filenames = [f for f in os.listdir(source_directory) if f.endswith(".json")]
     for filename in filenames:
         file_path = os.path.join(source_directory, filename)
