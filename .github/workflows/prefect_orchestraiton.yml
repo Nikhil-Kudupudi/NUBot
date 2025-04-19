@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - "**" # run on commits to main (adjust branch name as needed)
-    paths:
-      - "prefectWorkflows/**"
+    # paths:
+    #   - "prefectWorkflows/**"
   workflow_dispatch: # allow manual trigger from the Actions tab if needed
 
 jobs:
