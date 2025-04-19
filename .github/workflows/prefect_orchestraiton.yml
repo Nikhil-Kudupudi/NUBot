@@ -31,6 +31,7 @@ jobs:
       # Step 4: Build the Docker image
       - name: Build Docker image
         run: |
+          cd prefectWorkflows
           docker build -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/scraperflow:latest .
 
       # Step 5: Push the image to Artifact Registry
