@@ -58,7 +58,7 @@ jobs:
       - name: Deployment successful
         run: echo "Prefect flow deployment updated and scheduled successfully."
   deploy-worker:
-    needs: build-and-deploy-image
+    needs: build-and-deploy
     runs-on: ubuntu-latest
     steps:
       - name: Set up Google Cloud SDK
