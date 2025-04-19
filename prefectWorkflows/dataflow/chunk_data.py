@@ -8,11 +8,23 @@ import os
 from dotenv import load_dotenv
 from google.cloud.storage import Client
 
-from dataflow.store_data import upload_faiss_index_to_bucket
+from store_data import upload_faiss_index_to_bucket
 load_dotenv(override=True)
 BUCKET_NAME= os.getenv('BUCKET_NAME')
 from google.auth import default
-credentials, project = default()
+from google.oauth2 import service_account
+
+# Try to get credentials - works in both Docker and Cloud Run
+try:
+    # First try Application Default Credentials (works in Cloud Run)
+    credentials, project = default()
+except Exception:
+    # Fall back to explicit credentials file (for Docker)
+    credentials_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+    if credentials_path:
+        credentials = service_account.Credentials.from_service_account_file(credentials_path)
+    else:
+        raise Exception("No credentials available")
 RAW_DATA_FOLDER= os.getenv('RAW_DATA_FOLDER')
 def chunk_data():
     # Load all JSON files from a directory
@@ -53,4 +65,4 @@ def chunk_data():
 
 if __name__=="__main__":
     chunk_data()
-    
+    upload_faiss_index_to_bucket()

@@ -1,0 +1,17 @@
+python-dotenv
+requests
+transformers==4.48.0
+sentence-transformers
+torch
+faiss-cpu
+mlflow
+langchain[mistralai]
+langchain-community
+langgraph
+google-cloud-storage
+datasets
+gcsfs
+beautifulsoup4
+aiohttp
+langchain-huggingface
+langfair

@@ -1,7 +1,11 @@
 from prefect import flow, task
 from dataflow.scraper import  scrape_and_load_task 
 from dataflow.chunk_data import chunk_data
+from dotenv import load_dotenv
+import os
+load_dotenv(override=True)
 
+PREFECT_API_KEY=os.getenv('PREFECT_API_KEY')
 
 @task
 def scrape_all_urls_task():
