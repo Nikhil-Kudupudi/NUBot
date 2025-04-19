@@ -49,7 +49,7 @@ jobs:
       - name: Register Prefect deployment
         run: |
           cd prefectWorkflows
-          prefect deployment prefect.yaml --apply
+          prefect deploy --apply prefect.yaml 
         env:
           PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
           PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
