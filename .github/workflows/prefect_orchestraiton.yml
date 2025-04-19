@@ -57,3 +57,24 @@ jobs:
       # Step 8: (Optional) Confirm success
       - name: Deployment successful
         run: echo "Prefect flow deployment updated and scheduled successfully."
+  deploy-worker:
+    needs: build-and-deploy-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          credentials_json: "${{ secrets.GCP_KEY }}"
+
+      - name: Deploy Prefect worker to Cloud Run
+        run: |
+          gcloud run deploy prefect-worker \
+            --image=prefecthq/prefect:3-latest \
+            --service-account prefect-sa@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com \
+            --no-cpu-throttling \
+            --platform managed \
+            --allow-unauthenticated \
+            --memory 4Gi \
+            --timeout 3600s \
+            --set-env-vars "AIRFLOW_UID=5000,BASE_URL=https://www.khoury.northeastern.edu/,MAX_DEPTH=3,CONCURRENT_REQUESTS=10,DATA_FOLDER=scraped_data,MISTRAL_API_KEY=${{ secrets.MISTRAL_API_KEY }},MLFLOW_TRACKING_URI=${{ secrets.MLFLOW_TRACKING_URI }},BUCKET_NAME=${{ secrets.BUCKET_NAME }},RAW_DATA_FOLDER=raw_data,FAISS_INDEX_FOLDER=faiss_index,URLS_LIST= "https://www.khoury.northeastern.edu/",PREFECT_API_URL=${{ secrets.PREFECT_API_URL }},PREFECT_API_KEY=${{ secrets.PREFECT_API_KEY }} "
+            --args "prefect","worker","start","--pool","my-cloud-run-pool","-t","cloud-run"
