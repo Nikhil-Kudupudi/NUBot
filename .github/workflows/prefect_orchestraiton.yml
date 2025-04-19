@@ -49,7 +49,7 @@ jobs:
       - name: Register Prefect deployment
         run: |
           cd prefectWorkflows
-          prefect deploy flow.py:scraperflow \
+          prefect deploy scraper_flow.py:scraperflow \
           --name "scraperflow-deployment" \
           --description "ScraperFlow Deployment for scraping tasks" \
           --tag scraper --tag production \
