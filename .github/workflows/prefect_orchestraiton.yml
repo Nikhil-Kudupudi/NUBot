@@ -49,7 +49,14 @@ jobs:
       - name: Register Prefect deployment
         run: |
           cd prefectWorkflows
-          prefect deploy --apply prefect.yaml 
+          prefect deploy flow.py:scraperflow \
+          --name "scraperflow-deployment" \
+          --description "ScraperFlow Deployment for scraping tasks" \
+          --tag scraper --tag production \
+          --cron "0 9 * * 6" \
+          --pool my-cloud-run-pool \
+          --work-queue default
+
         env:
           PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
           PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
