@@ -3,10 +3,8 @@ name: Deploy Prefect Flow to Cloud Run
 on:
   push:
     branches:
-      - "**" # run on commits to main (adjust branch name as needed)
-    # paths:
-    #   - "prefectWorkflows/**"
-  workflow_dispatch: # allow manual trigger from the Actions tab if needed
+      - "**" # run on commits to any branch (adjust as needed)
+  workflow_dispatch: # allow manual trigger from the Actions tab
 
 jobs:
   build-deploy:
@@ -32,7 +30,9 @@ jobs:
       - name: Build Docker image
         run: |
           cd prefectWorkflows
-          docker build -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/scraperflow:latest .
+          docker build \
+            -t ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/scraperflow:latest \
+            .
 
       # Step 5: Push the image to Artifact Registry
       - name: Push Docker image
@@ -45,11 +45,14 @@ jobs:
 
       # Step 7: Register/Update Prefect deployment
       - name: Register Prefect deployment
-        # Use Prefect CLI to build and apply the deployment
         run: |
-          prefect deployment build flow.py:scraperflow -n "ScraperFlow Weekly" \
-              --pool my-cloud-run-pool -q default \
-              --cron "0 9 * * 6" --skip-upload --apply
+          prefect deployment build flow.py:scraperflow \
+            -n "ScraperFlow Weekly" \
+            --pool my-cloud-run-pool \
+            -q default \
+            --cron "0 9 * * 6" \
+            --skip-upload \
+            --apply
         env:
           PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
           PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
@@ -57,9 +60,11 @@ jobs:
       # Step 8: (Optional) Confirm success
       - name: Deployment successful
         run: echo "Prefect flow deployment updated and scheduled successfully."
+
   deploy-worker:
-    needs: build-and-deploy
+    needs: build-deploy
     runs-on: ubuntu-latest
+
     steps:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
@@ -76,5 +81,5 @@ jobs:
             --allow-unauthenticated \
             --memory 4Gi \
             --timeout 3600s \
-            --set-env-vars "AIRFLOW_UID=5000,BASE_URL=https://www.khoury.northeastern.edu/,MAX_DEPTH=3,CONCURRENT_REQUESTS=10,DATA_FOLDER=scraped_data,MISTRAL_API_KEY=${{ secrets.MISTRAL_API_KEY }},MLFLOW_TRACKING_URI=${{ secrets.MLFLOW_TRACKING_URI }},BUCKET_NAME=${{ secrets.BUCKET_NAME }},RAW_DATA_FOLDER=raw_data,FAISS_INDEX_FOLDER=faiss_index,URLS_LIST= "https://www.khoury.northeastern.edu/",PREFECT_API_URL=${{ secrets.PREFECT_API_URL }},PREFECT_API_KEY=${{ secrets.PREFECT_API_KEY }} "
+            --set-env-vars AIRFLOW_UID=5000,BASE_URL=https://www.khoury.northeastern.edu/,MAX_DEPTH=3,CONCURRENT_REQUESTS=10,DATA_FOLDER=scraped_data,MISTRAL_API_KEY=${{ secrets.MISTRAL_API_KEY }},MLFLOW_TRACKING_URI=${{ secrets.MLFLOW_TRACKING_URI }},BUCKET_NAME=${{ secrets.BUCKET_NAME }},RAW_DATA_FOLDER=raw_data,FAISS_INDEX_FOLDER=faiss_index,URLS_LIST=https://www.khoury.northeastern.edu/,PREFECT_API_URL=${{ secrets.PREFECT_API_URL }},PREFECT_API_KEY=${{ secrets.PREFECT_API_KEY }} \
             --args "prefect","worker","start","--pool","my-cloud-run-pool","-t","cloud-run"
