@@ -80,7 +80,6 @@ jobs:
         run: |
           gcloud run deploy prefect-worker \
             --image=prefecthq/prefect:3-latest \
-            --service-account prefect-sa@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com \
             --no-cpu-throttling \
             --region ${{ secrets.GCP_REGION }} \
             --platform managed \
