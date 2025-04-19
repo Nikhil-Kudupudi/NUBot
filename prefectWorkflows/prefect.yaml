@@ -13,11 +13,11 @@ build:
 push:
 
 # # pull section allows you to provide instructions for cloning this project in remote locations
-# pull:
-# - prefect.deployments.steps.git_clone:
-#     repository: https://github.com/Nikhil-Kudupudi/NUBot.git
-#     branch: gcs_bucket
-#     access_token:
+pull:
+- prefect.deployments.steps.git_clone:
+    repository: https://github.com/Nikhil-Kudupudi/NUBot.git
+    branch: docker-deployment
+    access_token:
 
 # the deployments section allows you to provide configuration for deploying flows
 deployments:
@@ -34,14 +34,14 @@ deployments:
     work_queue_name:
     job_variables: {}
 - name: default
-  version:
+  version: 1.0.0
   tags: []
   concurrency_limit:
-  description:
-  entrypoint: scraper_flow.py:scraperflow
+  description: "cloud run prefect flow"
+  entrypoint: prefectWorkflows/flow.py:scraperflow
   parameters: {}
   work_pool:
-    name: nubot_dataflow
-    work_queue_name:
+    name: my-cloud-run-pool
+    work_queue_name: default
     job_variables: {}
   schedules: []
