@@ -49,13 +49,7 @@ jobs:
       - name: Register Prefect deployment
         run: |
           cd prefectWorkflows
-          prefect deployment build flow.py:scraperflow \
-            -n "ScraperFlow Weekly" \
-            --pool my-cloud-run-pool \
-            -q default \
-            --cron "0 9 * * 6" \
-            --skip-upload \
-            --apply
+          prefect deployment prefect.yaml --apply
         env:
           PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
           PREFECT_API_URL: ${{ secrets.PREFECT_API_URL }}
