@@ -48,6 +48,7 @@ jobs:
       # Step 7: Register/Update Prefect deployment
       - name: Register Prefect deployment
         run: |
+          cd prefectWorkflows
           prefect deployment build flow.py:scraperflow \
             -n "ScraperFlow Weekly" \
             --pool my-cloud-run-pool \
