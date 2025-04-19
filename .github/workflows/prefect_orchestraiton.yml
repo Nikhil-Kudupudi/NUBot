@@ -29,17 +29,17 @@ jobs:
           gcloud auth configure-docker ${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev
 
       # Step 4: Build the Docker image
-      # - name: Build Docker image
-      #   run: |
-      #     cd prefectWorkflows
-      #     docker build \
-      #       -t ${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/scraperfloe:latest \
-      #       .
+      - name: Build Docker image
+        run: |
+          cd prefectWorkflows
+          docker build \
+            -t ${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/scraperfloe:latest \
+            .
 
-      # # Step 5: Push the image to Artifact Registry
-      # - name: Push Docker image
-      #   run: |
-      #     docker push ${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/scraperfloe:latest
+      # Step 5: Push the image to Artifact Registry
+      - name: Push Docker image
+        run: |
+          docker push ${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/scraperfloe:latest
 
       # Step 6: Install Prefect in the runner (for CLI use)
       - name: Install Prefect
