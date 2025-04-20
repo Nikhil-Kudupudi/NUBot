@@ -3,6 +3,7 @@ from dataflow.scraper import  scrape_and_load_task
 from dataflow.chunk_data import chunk_data
 from dotenv import load_dotenv
 import os
+from prefect.docker import DockerImage
 load_dotenv(override=True)
 
 PREFECT_API_KEY=os.getenv('PREFECT_API_KEY')
@@ -30,7 +31,15 @@ if __name__ == "__main__":
     #                    push=True
     #                   )
     try:
-        scraperflow()
+        scraperflow.deploy(
+        name="scraperflow-deployment",
+        work_pool_name="my-cloud-run-pool",
+        image=DockerImage(
+            name="us-docker.pkg.dev/nubot-nikhil/backend-nubot/scraperflow:latest",
+            platform="linux/amd64",
+        ),
+        schedule="0 9 * * 6",
+    )
     except Exception as e:
         print(e)
 

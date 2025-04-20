@@ -79,3 +79,17 @@ jobs:
       # Step 8: (Optional) Confirm success
       - name: Deployment successful
         run: echo "Prefect flow deployment updated and scheduled successfully."
+  deploy-flow:
+    needs: build-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Prefect
+        run: pip install prefect==3.*
+
+      - name: Run deploy script
+        env:
+          PREFECT_API_URL: https://api.prefect.cloud/api/accounts/${{ secrets.PREFECT_ACCOUNT_ID }}/workspaces/${{ secrets.PREFECT_WORKSPACE_ID }}
+          PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
+        run: |
+          cd prefectWorkflows
+          python scraper_flow.py
