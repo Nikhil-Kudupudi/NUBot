@@ -43,26 +43,14 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Install Prefect
-        run: pip install prefect==3.1.10
+      - name: Install Prefect3
+        run: pip install --no-cache-dir "prefect>=3.2.4"
 
-      - name: Authenticate with Prefect Cloud
-        env:
-          PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
+      - name: Deploy via prefect deploy
         run: |
-          # Use Prefect CLI to log in to Prefect Cloud non-interactively
-          prefect cloud login -k $PREFECT_API_KEY -w "${{ secrets.PREFECT_WORKSPACE }}" || {
-            # Fallback: manually set API URL and API Key if the above doesn't work
-            echo "Using manual Prefect Cloud authentication..."
-            prefect config set PREFECT_API_URL="https://api.prefect.cloud/api/accounts/${{ secrets.PREFECT_ACCOUNT_ID }}/workspaces/${{ secrets.PREFECT_WORKSPACE_ID }}"
-            prefect config set PREFECT_API_KEY="${{ secrets.PREFECT_API_KEY }}"
-          }
-        # This step authenticates the CLI with Prefect Cloud.
-        # We first attempt `prefect cloud login` (with API key and workspace) for convenience.
-        # If that fails (for example, if workspace name flag is not supported non-interactively),
-        # we fall back to setting PREFECT_API_URL and PREFECT_API_KEY directly&#8203;:contentReference[oaicite:11]{index=11}.
-        # The PREFECT_API_URL uses your Account ID and Workspace ID (from secrets)
-        # to target the correct workspace. This avoids "401 Unauthorized" due to wrong API URL.
+          cd prefectWorkflows
+          prefect deploy -n scraper-cron-deployment \
+            --override image=$IMAGE_URI           # tell pool to use latest image
 
       - name: Deploy Prefect flow
         run: |
