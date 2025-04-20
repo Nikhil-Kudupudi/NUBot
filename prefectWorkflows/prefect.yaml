@@ -5,7 +5,7 @@ prefect-version: 3.1.10 # Prefect version to use for this deployment (match your
 deployments:
   - name: scraperflow-deployment # Name of this deployment (appears in Prefect UI)
     description: "Scrapes all URLs and segments data every Saturday at 9:00 UTC"
-    entrypoint: scraper_flow.py:scraperflow # Entry point to the flow: "<script path>:<flow function>"
+    entrypoint: scraper_flow.py:scraper_flow # Entry point to the flow: "<script path>:<flow function>"
     # Cron schedule for every Saturday at 9:00 AM
     schedule:
       cron: "0 9 * * 6" # Cron expression for Saturday 09:00 (UTC)&#8203;:contentReference[oaicite:3]{index=3}
