@@ -8,7 +8,7 @@ import os
 from dotenv import load_dotenv
 from google.cloud.storage import Client
 
-from store_data import upload_faiss_index_to_bucket
+from dataflow.store_data import upload_faiss_index_to_bucket
 load_dotenv(override=True)
 BUCKET_NAME= os.getenv('BUCKET_NAME')
 from google.auth import default

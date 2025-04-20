@@ -1,87 +1,87 @@
-name: Deploy Prefect Flow to Cloud Run
+name: CI/CD Prefect Flow & Worker to Cloud Run
 
 on:
   push:
     branches:
-      - "**"             # run on commits to any branch (adjust as needed)
-  workflow_dispatch:    # allow manual trigger from the Actions tab
+      - "**" # run on commits to any branch (adjust as needed)
+  workflow_dispatch: # allow manual trigger
 
 jobs:
-  build-deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: GCP Authentication
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: "${{ secrets.GCP_KEY }}"
+          credentials_json: ${{ secrets.GCP_KEY }}
 
-      - name: Set up Google Cloud SDK
+      - name: Setup gcloud CLI
         uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-      - name: Docker login for Artifact Registry
-        run: |
-          gcloud auth configure-docker ${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev
+      - name: Docker login to Artifact Registry
+        run: gcloud auth configure-docker ${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev
 
-      - name: Build Docker image
+      - name: Build & Push Docker image
         run: |
           cd prefectWorkflows
           docker build \
             -t ${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/scraperflow:latest \
             .
-
-      - name: Push Docker image
-        run: |
           docker push ${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/scraperflow:latest
 
-      - name: Install Prefect
-        run: pip install --no-cache prefect==2.*
+      - name: Setup Python & Prefect CLI
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install prefect==3.*
 
-      - name: Register Prefect deployment
-        run: |
-          cd prefectWorkflows
-          prefect deploy scraper_flow.py:scraperflow \
-            --name "scraperflow-deployment" \
-            --description "ScraperFlow Deployment for scraping tasks" \
-            --tag scraper --tag production \
-            --cron "0 9 * * 6" \
-            --pool my-cloud-run-pool \
-            --work-queue default
-        env:
-          PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
-          PREFECT_API_URL: "https://api.prefect.cloud/api/accounts/${{ secrets.PREFECT_ACCOUNT_ID }}/workspaces/${{ secrets.PREFECT_WORKSPACE_ID }}"
+      - name: Prefect Auth & Deploy
+        uses: PrefectHQ/actions-prefect-auth@v1
+        with:
+          prefect-api-key: ${{ secrets.PREFECT_API_KEY }}
+          prefect-workspace: ${{ secrets.PREFECT_WORKSPACE_ID }}
+      - uses: PrefectHQ/actions-prefect-deploy@v4
+        with:
+          deployment-names: scraperflow-deployment
+          requirements-file-paths: requirements.txt
+          deployment-file-path: prefect.yaml
 
-      - name: Deploy Prefect worker to Cloud Run
-        run: |
-          gcloud run deploy prefect-worker \
-            --image=${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/scraperflow:latest \
-            --no-cpu-throttling \
-            --region ${{ secrets.GCP_REGION }} \
-            --platform managed \
-            --allow-unauthenticated \
-            --memory 4Gi \
-            --timeout 3600s \
-            --entrypoint=sh \
-            --args="-c,prefect worker start --pool my-cloud-run-pool -t cloud-run & python3 -m http.server \$PORT" \
-            --set-env-vars AIRFLOW_UID=5000,BASE_URL=https://www.khoury.northeastern.edu/,MAX_DEPTH=3,CONCURRENT_REQUESTS=10,DATA_FOLDER=scraped_data,MISTRAL_API_KEY=${{ secrets.MISTRAL_API_KEY }},MLFLOW_TRACKING_URI=${{ secrets.MLFLOW_TRACKING_URI }},BUCKET_NAME=${{ secrets.BUCKET_NAME }},RAW_DATA_FOLDER=raw_data,FAISS_INDEX_FOLDER=faiss_index,URLS_LIST=https://www.khoury.northeastern.edu/,PREFECT_API_URL=${{ secrets.PREFECT_API_URL }},PREFECT_API_KEY=${{ secrets.PREFECT_API_KEY }}
       - name: Deployment successful
-        run: echo "Prefect flow deployment updated and scheduled successfully."
+        run: echo "Prefect flow deployed ✔️"
 
-  deploy-flow:
-    needs: build-deploy
+  deploy-worker:
+    needs: build-and-deploy
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install Prefect
-        run: pip install prefect==3.*
+      - name: GCP Authentication
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_KEY }}
 
-      - name: Run deploy script
-        env:
-          PREFECT_API_URL: "https://api.prefect.cloud/api/accounts/${{ secrets.PREFECT_ACCOUNT_ID }}/workspaces/${{ secrets.PREFECT_WORKSPACE_ID }}"
-          PREFECT_API_KEY: ${{ secrets.PREFECT_API_KEY }}
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Deploy Prefect Worker to Cloud Run
         run: |
-          cd prefectWorkflows
-          python scraper_flow.py
+          gcloud run deploy prefect-worker \
+            --image=${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/scraperflow:latest \
+            --platform managed \
+            --region ${{ secrets.GCP_REGION }} \
+            --allow-unauthenticated \
+            --no-cpu-throttling \
+            --min-instances=1 \
+            --timeout=3600s \
+            --memory=4Gi \
+            --args="-c,prefect worker start --pool my-cloud-run-pool -t cloud-run & python3 -m http.server \$PORT" \
+            --set-env-vars AIRFLOW_UID=5000,BASE_URL=https://www.khoury.northeastern.edu/,MAX_DEPTH=3,CONCURRENT_REQUESTS=10,DATA_FOLDER=scraped_data,MISTRAL_API_KEY=${{ secrets.MISTRAL_API_KEY }},MLFLOW_TRACKING_URI=${{ secrets.MLFLOW_TRACKING_URI }},BUCKET_NAME=${{ secrets.BUCKET_NAME }},RAW_DATA_FOLDER=raw_data,FAISS_INDEX_FOLDER=faiss_index,URLS_LIST=https://www.khoury.northeastern.edu/,PREFECT_API_URL= "https://api.prefect.cloud/api/accounts/${{ secrets.PREFECT_ACCOUNT_ID }}/workspaces/${{ secrets.PREFECT_WORKSPACE_ID }}",PREFECT_API_KEY=${{ secrets.PREFECT_API_KEY }}
+      - name: Worker deployed
+        run: echo "Prefect worker deployed ✔️"
