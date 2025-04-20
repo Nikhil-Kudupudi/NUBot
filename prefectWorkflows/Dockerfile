@@ -14,7 +14,7 @@ RUN pip install -r requirements.txt
 
 # Copy the Prefect flow code and the dataflow module into the image
 COPY prefectWorkflows/ /app/prefectWorkflows/
-COPY dataflow/ /app/dataflow/
+
 
 # Ensure Python can find the 'dataflow' module (add /app to PYTHONPATH)
 ENV PYTHONPATH="/app:${PYTHONPATH}"
