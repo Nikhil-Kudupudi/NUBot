@@ -3,7 +3,7 @@ name: Deploy Prefect Flow to Cloud Run
 on:
   push:
     branches:
-      - main # or any branches you want to trigger the workflow
+      - "**" # or any branches you want to trigger the workflow
   workflow_dispatch: # allows manual triggering
 
 env:
