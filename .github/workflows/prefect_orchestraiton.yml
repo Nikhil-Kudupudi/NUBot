@@ -19,21 +19,21 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_KEY }}
 
-      - name: Setup gcloud CLI
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
+      # - name: Setup gcloud CLI
+      #   uses: google-github-actions/setup-gcloud@v2
+      #   with:
+      #     project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-      - name: Docker login to Artifact Registry
-        run: gcloud auth configure-docker ${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev
+      # - name: Docker login to Artifact Registry
+      #   run: gcloud auth configure-docker ${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev
 
-      - name: Build & Push Docker image
-        run: |
-          cd prefectWorkflows
-          docker build \
-            -t ${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/scraperflow:latest \
-            .
-          docker push ${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/scraperflow:latest
+      # - name: Build & Push Docker image
+      #   run: |
+      #     cd prefectWorkflows
+      #     docker build \
+      #       -t ${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/scraperflow:latest \
+      #       .
+      #     docker push ${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/scraperflow:latest
 
       - name: Setup Python & Prefect CLI
         uses: actions/setup-python@v5
@@ -45,7 +45,7 @@ jobs:
         uses: PrefectHQ/actions-prefect-auth@v1
         with:
           prefect-api-key: ${{ secrets.PREFECT_API_KEY }}
-          prefect-workspace: ${{ secrets.PREFECT_WORKSPACE_ID }}
+          prefect-workspace: ${{ secrets.PREFECT_WORKSPACE_NAME }}
       - uses: PrefectHQ/actions-prefect-deploy@v4
         with:
           deployment-names: scraperflow-deployment
