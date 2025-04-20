@@ -1,0 +1,1497 @@
+@import url('https://fonts.googleapis.com/css2?family=The+Seasons&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+/* Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: white;
+  overflow: hidden;
+}
+
+.App {
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+}
+
+/* Landing Page Styles */
+.landing-container {
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+  overflow-y: auto;
+}
+
+.centered {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  background-color: white;
+}
+
+.nubot-logo {
+  font-family: 'The Seasons', serif;
+  font-size: 80px;
+  font-weight: normal;
+  margin-bottom: 1rem;
+  line-height: 1;
+}
+
+.nubot-logo .nu {
+  color: #FF3B30;
+}
+
+.nubot-logo .bot {
+  color: #000000;
+}
+
+.subtitle {
+  font-size: 20px;
+  color: #333333;
+  margin-bottom: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* New Navigation Header Styles */
+.landing-header {
+  background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100px;
+  padding-left: 70px;
+  padding-right: 70px;
+  box-sizing: border-box;
+  z-index: 1000;
+  width: 100%;
+}
+
+.landing-header-left {
+  display: flex;
+  align-items: center;
+}
+
+.landing-header-left .nu-logo {
+  height: 100px;
+  width: auto;
+  opacity: 1;
+}
+
+.landing-header-right {
+  display: flex;
+  align-items: center;
+}
+
+.landing-nav {
+  display: flex;
+  gap: 30px;
+}
+
+.nav-link {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: color 0.2s ease;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: #FF3B30;
+}
+
+.nav-link:hover::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #FF3B30;
+  transition: width 0.3s ease;
+}
+
+/* Landing Page "START" button */
+.start-button {
+    font-family: 'Open sans', serif;
+    text-transform: uppercase;
+    font-size: 18px;              /* smaller, 18px text */
+    font-weight: bold;
+    text-transform: none;            /* bold text */
+    background: #F2F2F7;
+    border: 2px solid #FF3B30;    /* red border by default */
+    padding: 12px 32px;
+    border-radius: 25px;
+    color: #333333;
+    cursor: pointer;
+    margin-top: 20px;
+    display: inline-block;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition:
+      background 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.1s ease,
+      box-shadow 0.2s ease;
+  }
+  
+  .start-button:hover {
+    background: #000000;          /* black background */
+    color: #FFFFFF;               /* white text */
+    border-color: transparent;    /* remove the red border on hover */
+    transform: translateY(-2px);  /* subtle lift */
+    box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+  }
+  
+  .start-button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  
+/* Chat Interface Styles - UPDATED */
+.chat-container {
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header styles with much larger logo */
+.header {
+    background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100px;
+    padding-left: 45px;
+    padding-right: 70px;
+    box-sizing: border-box;
+    z-index: 1000;
+  }
+  
+  .nubot-logo-header {
+    font-family: 'The Seasons', serif;
+    font-size: 36px;
+    font-weight: bold;
+  }
+  
+  /* Pull the NU logo 20px closer to the right edge */
+  .header-right {
+    margin-right: -40px;
+  }
+  
+  .nubot-logo-header {
+    font-family: 'The Seasons', serif;
+    font-size: 36px;
+    font-weight: bold;
+  }
+  
+  .header-right {
+    display: flex;
+    align-items: center;
+    /* Increased height to accommodate larger logo */
+    height: 100px;
+  }
+  
+  .nu-logo {
+    height: 100px; /* Much larger logo */
+    width: auto;
+    opacity: 1; /* Full opacity */
+    margin-right: 15px;
+  }
+  
+  /* Make the header taller to accommodate the larger logo */
+  @media (max-width: 768px) {
+    .nu-logo {
+      height: 80px; /* Slightly smaller on mobile but still large */
+    }
+  }
+
+.nu {
+  color: #FF3B30;
+}
+
+.bot {
+  color: white;
+}
+
+/* Chat area */
+/* 1) Pick your desired max width */
+:root {
+    --chat-max-width: 1200px;   /* ↑ increase this to expand the bubble area */
+  }
+  
+  /* 2) Constrain ONLY the chat bubbles section */
+  .chat-area {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  
+    /* make it full‑width up to the max, then center */
+    width: 100%;
+    max-width: var(--chat-max-width);
+    margin: 0 auto;             /* ← auto left/right centering */
+  }
+
+.message {
+  display: flex;
+  align-items: flex-start;
+  max-width: 80%;
+}
+
+.message.bot {
+  flex-direction: row;
+  align-self: flex-start;
+}
+
+.message.user {
+    display: flex;
+    flex-direction: row;  
+    align-self: flex-end;
+}
+
+.bot-avatar {
+  margin-right: 10px;
+}
+
+.user-avatar {
+  margin-left: 10px;
+}
+
+.bubble {
+  padding: 15px 20px;
+  border-radius: 30px;
+  background-color: #f0f2f5;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #333333;
+  max-width: calc(100% - 50px);
+}
+
+.message.user .bubble {
+  background-color: #f0f2f5;
+}
+
+/* Input area - ChatGPT Style */
+.input-container {
+  width: 100%;
+  padding: 10px 0 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.input-area {
+    width: 60%;
+    max-width: 800px;
+    min-width: 300px;
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #e0e0e0;
+    background-color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.1s ease;
+  }
+  
+  .input-area:hover {
+    border-color: #000000;               /* turn border black */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* deeper shadow */
+    transform: translateY(-2px);         /* subtle lift */
+  }
+
+.message-input {
+  flex-grow: 1;
+  border: none;
+  padding: 8px;
+  font-size: 14px;
+  background-color: transparent;
+  color: #333333;
+  outline: none;
+}
+
+.input-action-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #FF3B30;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.input-action-btn:hover {
+  background-color: #f0f0f0;
+}
+
+/* Footer */
+.chat-footer {
+  padding: 10px 0 20px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Exit button */
+/* Exit‑chat button – match the LandingPage START button */
+/* Exit‑chat button – same look as START but without any border */
+.exit-btn {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: none;
+    background: #F2F2F7;
+    border: none;                  /* no border */
+    padding: 12px 32px;
+    border-radius: 25px;
+    color: #333333;
+    cursor: pointer;
+    display: inline-block;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition:
+      background 0.2s ease,
+      color 0.2s ease,
+      transform 0.1s ease,
+      box-shadow 0.2s ease;
+  }
+  
+  .exit-btn:hover {
+    background: #000000;           /* black background */
+    color: #FFFFFF;                /* white text */
+    transform: translateY(-2px);   /* subtle lift */
+    box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+  }
+  
+  .exit-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+/* ──────────────────────────────────── */
+/* Landing‑page extra sections/styles */
+/* ──────────────────────────────────── */
+
+/* Tools carousel */
+/* Update the tools section layout */
+.tools-section {
+    width: 90%;
+    max-width: 1200px;
+    margin: 3rem auto;
+    padding: 0 20px;
+  }
+  
+  .tools-header {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  
+  .tools-header:after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: #FF3B30;
+    border-radius: 3px;
+  }
+  
+  /* Change to grid layout */
+  .tools-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, auto);
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1000px; /* Increased from 800px to make boxes wider */
+    margin: 0 auto;
+  }
+  
+  /* Update tool card with hover effects */
+  .tool-card {
+    background: #F9F9F9;
+    border-radius: 16px;
+    padding: 2rem 2.5rem; /* Increased horizontal padding to make cards wider */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    text-align: center;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.05);
+  }
+  
+  .tool-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+    background: #FFFFFF;
+    border-color: #FF3B30;
+  }
+  
+  .tool-card:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 0;
+    background-color: #FF3B30;
+    transition: height 0.3s ease;
+  }
+  
+  .tool-card:hover:before {
+    height: 100%;
+  }
+  
+  .tool-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .tool-card:hover .tool-icon {
+    transform: scale(1.1);
+  }
+  
+  .tool-name {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0.5rem 0;
+    color: #333;
+    transition: color 0.3s ease;
+  }
+  
+  .tool-card:hover .tool-name {
+    color: #FF3B30;
+  }
+  
+  .tool-desc {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.4;
+  }
+  
+  /* Responsive design for mobile */
+  @media (max-width: 768px) {
+    .tools-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .tool-card {
+      padding: 1.25rem;
+    }
+    
+    .landing-header {
+      padding-left: 20px;
+      padding-right: 20px;
+      height: 80px;
+    }
+    
+    .landing-header-left .nu-logo {
+      height: 80px;
+    }
+    
+    .nav-link {
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .landing-nav {
+      gap: 15px;
+    }
+  }
+  
+  /* Improve overall spacing */
+  .thank-you {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    text-align: center;
+    color: #333;
+    margin: 3rem 0;
+    padding: 0 20px;
+  }
+  
+  /* Enhanced footer */
+  .footer {
+    text-align: center;
+    font-size: 14px;
+    color: #777;
+    padding: 1.5rem 0;
+    background: #F9F9F9;
+    border-top: 1px solid #eee;
+    width: 100%;
+    position: relative;
+    bottom: 0;
+  }
+
+  /* New Hero Section Styles - UPDATED FOR HEADER */
+  .hero-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 0px 100px 40px; /* Reduced top padding due to header */
+    position: relative;
+    gap: 0;
+    overflow: visible;
+  }
+  
+  .hero-content {
+    flex: 0 1 45%; /* Reduced flex-basis to make more room for illustration */
+    max-width: 1500px;
+  }
+  
+  .hero-logo {
+    font-family: 'The Seasons', serif;
+    font-size: 78px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    margin-bottom: -10px;
+  }
+  
+  .nu {
+    color: #FF3B30;
+  }
+  
+  .bot {
+    color: #000000;
+  }
+  
+  .chat-icon {
+    width: 35px;
+    height: 30px;
+    margin-left: 8px;
+    /* If you need to adjust vertical alignment */
+    vertical-align: middle;
+  }
+  
+  .hero-subtitle {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 24px;
+    color: #333333;
+    font-weight: normal;
+    margin-bottom: 50px;
+    line-height: 1.3;
+  }
+  
+  .start-chatting-button {
+    background-color: #FF3B30;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 28px;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    transition: background-color 0.2s, transform 0.2s;
+    margin-bottom: 30px;
+  }
+  
+  .start-chatting-button:hover {
+    background-color: #000000; /* Changed to black on hover */
+    transform: scale(1.05); /* Added zoom effect */
+  }
+  
+  .arrow {
+    margin-left: 8px;
+    transition: transform 0.2s;
+  }
+  
+  .start-chatting-button:hover .arrow {
+    transform: translateX(3px); /* Slight arrow movement on hover */
+  }
+  
+  .hero-description {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 16px;
+    color: #666666;
+    line-height: 1.5;
+    max-width: 450px;
+  }
+  
+  .hero-illustration {
+    flex: 0 1 60%; /* Increased from 55% to 60% */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    height: 500px; /* Set explicit height to make more vertical space */
+  }
+  
+  .student-image {
+    max-width: 90%; /* Much larger image size horizontally */
+    height: auto;
+    object-fit: contain;
+    margin-left: 30px; /* Pull image further to the left */
+    /* Remove background */
+    background: transparent;
+    mix-blend-mode: normal;
+    border: none;
+    outline: none;
+    filter: none;
+    /* Position to overlap content */
+    position: relative;
+    z-index: 2;
+    /* Add scale transformation for extra size */
+    transform: scale(1.3); /* Bigger scale factor */
+  }
+  
+  /* Background shape (optional) */
+  .landing-container::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 240px;
+    height: 240px;
+    background-color: rgba(255, 59, 48, 0.1);
+    border-top-right-radius: 100%;
+    z-index: -1;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 968px) {
+    .hero-section {
+      flex-direction: column;
+      padding: 40px 0;
+      text-align: center;
+      overflow: hidden;
+      margin-top: 30px; /* Add space between header and hero on mobile */
+    }
+    
+    .hero-content {
+      margin-bottom: 0;
+      padding: 0 20px;
+      flex: 1 0 auto;
+      max-width: 100%;
+    }
+    
+    .hero-illustration {
+      flex: 1 0 auto;
+      width: 100%;
+      height: 400px; /* Fixed height on mobile */
+      margin-top: -20px;
+      overflow: visible;
+    }
+    
+    .student-image {
+      max-width: 110%; /* Base size on mobile */
+      margin: 0 auto;
+      transform: scale(1.6); /* Even bigger scale on mobile */
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .hero-logo {
+      font-size: 42px;
+    }
+    
+    .hero-subtitle {
+      font-size: 20px;
+    }
+    
+    .start-chatting-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+  
+  .header .bot, 
+  .nubot-logo-header .bot,
+  .landing-header .bot {
+    color: white;
+  }
+  
+  /* Keep the landing page .bot text as black */
+  .hero-logo .bot {
+    color: #000000;
+  }
+  /* About Us Section Styles */
+.about-us-section {
+    width: 90%;
+    max-width: 1200px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .about-us-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    background-color: #FF3B30;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+  }
+  
+  .about-us-header {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 2rem;
+    text-align: center;
+    position: relative;
+  }
+  
+  .about-us-header:after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: #FF3B30;
+    border-radius: 3px;
+  }
+  
+  .about-us-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .about-us-text {
+    flex: 1;
+  }
+  
+  .about-us-text h3 {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 1rem;
+    margin-top: 1.5rem;
+  }
+  
+  .about-us-text p {
+    font-family: 'open sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 1.2rem;
+  }
+  
+  .about-us-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 1.5rem 0;
+  }
+  
+  .about-us-list li {
+    font-family: 'open sans', sans-serif;
+    font-size: 16px;
+    color: #555;
+    padding-left: 1.5rem;
+    position: relative;
+    margin-bottom: 0.8rem;
+    line-height: 1.4;
+  }
+  
+  .about-us-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    width: 8px;
+    height: 8px;
+    background-color: #FF3B30;
+    border-radius: 50%;
+  }
+  
+  /* Contact Section Styles */
+  .contact-section {
+    width: 90%;
+    max-width: 1200px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .contact-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    background-color: #FF3B30;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+  }
+  
+  .contact-header {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  
+  .contact-header:after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: #FF3B30;
+    border-radius: 3px;
+  }
+  
+  .contact-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  
+  .contact-text {
+    font-family: 'open sans', sans-serif;
+    font-size: 18px;
+    color: #555;
+    max-width: 600px;
+    line-height: 1.5;
+  }
+  
+  .contact-email {
+    font-family: 'open sans', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    margin: 1rem 0;
+  }
+  
+  .contact-email a {
+    color: #FF3B30;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  
+  .contact-email a:hover {
+    color: #000000;
+    text-decoration: underline;
+  }
+  
+  .team-info {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 16px;
+    color: #666;
+    line-height: 1.4;
+    margin-top: 1.5rem;
+  }
+  
+  .team-info p {
+    margin: 0.3rem 0;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .about-us-section,
+    .contact-section {
+      padding: 1.5rem;
+    }
+    
+    .about-us-header,
+    .contact-header {
+      font-size: 26px;
+    }
+    
+    .about-us-text h3 {
+      font-size: 20px;
+    }
+    
+    .about-us-text p,
+    .about-us-list li {
+      font-size: 15px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .about-us-section,
+    .contact-section {
+      padding: 1rem;
+    }
+    
+    .contact-text,
+    .contact-email {
+      font-size: 16px;
+    }
+    
+    .team-info {
+      font-size: 14px;
+    }
+  }
+ /* Chat Widget Styles */
+/* Bot Icon */
+.bot-icon-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+  }
+  
+  .bot-icon-container:hover {
+    transform: scale(1.1);
+  }
+  
+  .bot-icon {
+    width: 60px;
+    height: 60px;
+  }
+  
+  /* Updated Welcome Message Bubble - Single Line Design */
+.welcome-message {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    z-index: 1000;
+    cursor: pointer;
+    animation: pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  
+  @keyframes pop-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.5) translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+  
+  .welcome-bubble {
+    display: flex;
+    align-items: center;
+    background-color: black;
+    padding: 12px 20px;
+    border-radius: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    max-width: 350px;
+  }
+  
+  .husky-logo {
+    width: 0px;
+    height: 0px;
+    margin-right: 12px;
+    border-radius: 50%;
+    background-color: white;
+    padding: 2px;
+  }
+  
+  .welcome-text {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 16px;
+    color: white;
+    line-height: 1.2;
+    font-weight: 500;
+  }
+  
+  /* Chat Widget */
+  .chat-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    height: 500px;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    animation: slide-up 0.3s ease;
+  }
+  
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Chat Widget Header */
+  .chat-widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: black;
+    padding: 15px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+  }
+  
+  .chat-widget-title {
+    display: flex;
+    align-items: center;
+  }
+  
+  .nubot-logo-small {
+    font-family: 'The Seasons', serif;
+    font-size: 22px;
+    font-weight: bold;
+  }
+  
+  /* Make the "Bot" text in the widget header white */
+  .nubot-logo-small .bot {
+    color: white;
+  }
+  
+  .chat-widget-controls {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .widget-control-btn {
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+  }
+  
+  .widget-control-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .widget-control-btn.close:hover {
+    background-color: rgba(255, 59, 48, 0.8);
+  }
+  
+  /* Chat Widget Messages */
+  .chat-widget-messages {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .widget-message {
+    display: flex;
+    align-items: flex-start;
+    max-width: 85%;
+  }
+  
+  .widget-message.bot {
+    flex-direction: row;
+    align-self: flex-start;
+  }
+  
+  .widget-message.user {
+    flex-direction: row;
+    align-self: flex-end;
+  }
+  
+  .widget-message .bubble {
+    padding: 12px 16px;
+    border-radius: 18px;
+    background-color: #f0f2f5;
+    font-size: 14px;
+    line-height: 1.4;
+    max-width: calc(100% - 40px);
+  }
+  
+  .widget-message.bot .avatar {
+    margin-right: 8px;
+    transform: scale(0.8); /* Slightly smaller avatar in widget */
+  }
+  
+  .widget-message.user .avatar {
+    margin-left: 8px;
+    transform: scale(0.8); /* Slightly smaller avatar in widget */
+  }
+  
+  /* Input Area */
+  .chat-widget-input {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-top: 1px solid #e0e0e0;
+    background-color: white;
+  }
+  
+  .widget-message-input {
+    flex-grow: 1;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    padding: 8px 12px;
+    margin-right: 10px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  
+  .widget-message-input:focus {
+    border-color: #FF3B30;
+  }
+  
+  .widget-send-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background-color: #FF3B30;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .widget-send-btn:hover {
+    background-color: #000000;
+  }
+  
+  /* Try It Out Nav Link Highlight */
+  .nav-link.try-it-out {
+    position: relative;
+  }
+  
+  .nav-link.try-it-out.active {
+    color: #FF3B30;
+  }
+  
+  .nav-link.try-it-out::after {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #FF3B30;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+  
+  .nav-link.try-it-out:hover::after {
+    transform: scaleX(1);
+  }
+  
+  .nav-link.try-it-out.active::after {
+    transform: scaleX(1);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 576px) {
+    .chat-widget {
+      width: 300px;
+      height: 450px;
+      bottom: 10px;
+      right: 10px;
+    }
+    
+    .bot-icon-container {
+      bottom: 10px;
+      right: 10px;
+    }
+    
+    .welcome-message {
+      bottom: 80px;
+      right: 10px;
+    }
+    
+    .welcome-bubble {
+      max-width: 200px;
+    }
+  }
+  /* Hover effect for About Us and Contact Us sections */
+.about-us-section,
+.contact-section {
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.about-us-section:hover,
+.contact-section:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+  border-color: #FF3B30;
+}
+
+/* Modify the existing ::before pseudo-element for the red left border */
+.about-us-section::before,
+.contact-section::before {
+  transition: height 0.3s ease;
+  height: 0; /* Start with zero height */
+}
+
+.about-us-section:hover::before,
+.contact-section:hover::before {
+  height: 100%; /* Expand to full height on hover */
+}
+
+/* Add header color change on hover */
+.about-us-section:hover .about-us-header,
+.contact-section:hover .contact-header {
+  color: #FF3B30;
+  transition: color 0.3s ease;
+}
+
+/* Add subtle content scaling effect */
+.about-us-content,
+.contact-content {
+  transition: transform 0.3s ease;
+}
+
+.about-us-section:hover .about-us-content,
+.contact-section:hover .contact-content {
+  transform: scale(1.01);
+}
+
+/* Update Welcome Message to use bullet point instead of image */
+.welcome-text {
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 16px;
+  color: white;
+  line-height: 1.2;
+  font-weight: 500;
+  padding-left: 10px; /* Add some padding for the bullet point */
+}
+/* Add this to your index.css file or in a style tag in your HTML */
+
+/* Create a subtle gradient background effect */
+.landing-container {
+    position: relative;
+    background: linear-gradient(
+      135deg, 
+      rgba(255, 255, 255, 1) 0%, 
+      rgba(245, 245, 250, 1) 100%
+    );
+  }
+  /* Add these styles to your index.css file */
+
+/* Loading animation styles */
+.loading-dots {
+    display: inline-block;
+    min-width: 24px;
+    text-align: left;
+    font-size: 18px;
+    letter-spacing: 2px;
+    animation: fadeInOut 1.5s infinite;
+  }
+  
+  @keyframes fadeInOut {
+    0%, 100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  
+  /* Special smaller bubble for loading */
+  .loading-bubble {
+    min-width: 40px;
+    min-height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+  }
+  
+  /* Styles for disabling input while loading */
+  .input-action-btn.disabled,
+  .widget-send-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* Widget loading animation */
+  .widget-message .loading-dots {
+    font-size: 16px;
+  }
+  
+  /* Add a subtle pulsing effect to the bot avatar during loading */
+  .message.bot:has(+ .loading-bubble) .bot-avatar,
+  .widget-message.bot:has(+ .loading-bubble) .bot-avatar {
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  /* Add these styles to your index.css file */
+
+/* Typing indicator container */
+.typing-indicator {
+    background-color: #f0f2f5; /* Match your bubble color */
+    width: auto;
+    min-width: 30px;
+    border-radius: 18px; /* Match your bubble radius */
+    padding: 8px 16px;
+    display: inline-block;
+    position: relative;
+  }
+  
+  /* The three dots */
+  .typing-indicator span {
+    height: 8px;
+    width: 8px;
+    float: left;
+    margin: 0 1px;
+    background-color: #9E9EA1;
+    display: block;
+    border-radius: 50%;
+    opacity: 0.4;
+  }
+  
+  /* Individual dot animations with delays */
+  .typing-indicator span:nth-of-type(1) {
+    animation: 1s blink infinite 0.3333s;
+  }
+  
+  .typing-indicator span:nth-of-type(2) {
+    animation: 1s blink infinite 0.6666s;
+  }
+  
+  .typing-indicator span:nth-of-type(3) {
+    animation: 1s blink infinite 0.9999s;
+  }
+  
+  /* Keyframes for the blinking animation */
+  @keyframes blink {
+    50% {
+      opacity: 1;
+    }
+  }
+  
+  /* Special loading bubble that contains the typing indicator */
+  .loading-bubble {
+    background-color: #f0f2f5;
+    min-width: 40px;
+    min-height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+  }
+  
+  /* Styles for disabling input while loading */
+  .input-action-btn.disabled,
+  .widget-send-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* Widget-specific styling */
+  .widget-message .typing-indicator {
+    padding: 6px 12px;
+  }
+  
+  .widget-message .typing-indicator span {
+    height: 6px;
+    width: 6px;
+  }
+  
+  /* Add a subtle pulsing effect to the bot avatar during loading */
+  .message.bot .bot-avatar,
+  .widget-message.bot .avatar.bot-avatar {
+    animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
