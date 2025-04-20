@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # RUN pip install prefect==3.1.10
 
 # Copy the Prefect flow code and the dataflow module into the image
-COPY prefectWorkflows/ /app/prefectWorkflows/
+COPY . .
 
 
 # Ensure Python can find the 'dataflow' module (add /app to PYTHONPATH)
