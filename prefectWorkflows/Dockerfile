@@ -1,32 +1,24 @@
+# Start from a lightweight Python image (use the appropriate Python version)
 FROM python:3.10-slim
 
+# Set working directory in container
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    curl \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+# Install Python dependencies.
+# If you have a requirements.txt, copy and install it:
+COPY requirements.txt . 
+RUN pip install -r requirements.txt
 
-# Copy requirements file
-COPY requirements.txt .
+# (Alternatively, directly install Prefect and any needed libraries)
+# RUN pip install prefect==3.1.10
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy the Prefect flow code and the dataflow module into the image
+COPY prefectWorkflows/ /app/prefectWorkflows/
+COPY dataflow/ /app/dataflow/
 
-# Copy the application code
-COPY . .
+# Ensure Python can find the 'dataflow' module (add /app to PYTHONPATH)
+ENV PYTHONPATH="/app:${PYTHONPATH}"
 
-# Set environment variables
-ENV PYTHONUNBUFFERED=1
-
-# Default command to run the Prefect worker
-CMD ["prefect", "worker", "start", "--pool", "my-cloud-run-pool", "--type", "cloud-run"]
-
-# Expose the port that Cloud Run expects
-EXPOSE 8080
-
-# Health check endpoint for Cloud Run
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:8080/ || exit 1
+# (Optional) Set a default command (Prefect Cloud will override this when submitting the flow run)
+# By default, do nothing or use a generic command. Prefect Cloud's work pool will specify the entrypoint at runtime.
+CMD ["python", "-c", "print('Container built for Prefect flow execution')"]

@@ -1,33 +1,36 @@
-from prefect import flow, task
-from dataflow.scraper import  scrape_and_load_task 
-from dataflow.chunk_data import chunk_data
-from dotenv import load_dotenv
-import os
-from prefect.docker import DockerImage
-load_dotenv(override=True)
+from prefect import flow, task, get_run_logger
+# Import the supporting functions from dataflow module
+from dataflow.scraping import scrape_and_load_task  # adjust import to actual module path
+from dataflow.processing import chunk_data
 
-PREFECT_API_KEY=os.getenv('PREFECT_API_KEY')
-
+# Define Prefect tasks
 @task
 def scrape_all_urls_task():
-    # If scrape_all_urls is an imported function, call it here and return the result
-    return scrape_and_load_task()  # or return the relevant data
-@task
-def dataSegmentation():
-    return chunk_data()
+    """Task to scrape all URLs and load raw data."""
+    logger = get_run_logger()
+    logger.info("Starting scrape_all_urls_task...")
+    data = scrape_and_load_task()  # call the helper function to scrape and load data
+    logger.info(f"Scraped data: {len(data)} items.")
+    return data
 
-@flow(log_prints=True)
-def scraperflow():
-    # Use the tasks within the flow
-    scrape_all_urls_task()
-    dataSegmentation()
+@task
+def dataSegmentation(data):
+    """Task to segment the scraped data into chunks."""
+    logger = get_run_logger()
+    logger.info("Starting dataSegmentation task...")
+    segments = chunk_data(data)  # call helper to chunk the data
+    logger.info(f"Segmented data into {len(segments)} chunks.")
+    return segments
+
+@flow
+def scraper_flow():
+    """Prefect flow to orchestrate scraping and data segmentation."""
+    # Run the scraping task and then pass its result into the segmentation task
+    raw_data = scrape_all_urls_task()
+    segmented = dataSegmentation(raw_data)
+    # (Optional) do something with segmented data, e.g., save or return
+    return "done"
 
 if __name__ == "__main__":
-# # Run the flow
-
-    try:
-
-        scraperflow()
-    except Exception as e:
-        print(e)
-
+    # This allows testing the flow locally by running this script
+    scraper_flow()

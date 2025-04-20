@@ -1,44 +1,20 @@
-# Welcome to your prefect.yaml file! You can use this file for storing and managing
-# configuration for deploying your flows. We recommend committing this file to source
-# control along with your flow code.
+# Prefect deployment configuration for the scraper_flow
+name: scraper-flow-project # Name of the project (can be any identifier for your reference)
+prefect-version: 3.1.10 # Prefect version to use for this deployment (match your Prefect 3.x version)
 
-# Generic metadata about this project
-name: prefectWorkflows
-prefect-version: 3.2.15
-
-# build section allows you to manage and build docker images
-# You can leave this empty if not using Docker for deployment
-build: {}
-
-# push section allows you to manage if and how this project is uploaded to remote locations
-# Leave this empty if you don't need to push artifacts
-push: {}
-
-# pull section allows you to provide instructions for cloning this project in remote locations
-# Remove or uncomment and modify if you need this step for pulling code from GitHub or other places
-pull:
-  - prefect.deployments.steps.git_clone:
-      repository: https://github.com/Nikhil-Kudupudi/NUBot.git
-      branch: docker-deployment
-      access_token: <your-access-token>
-
-# Deployments section allows you to provide configuration for deploying flows
 deployments:
-  - name: "scraperflow-deployment"
-    version: "1.0.0"  # Define a version for your deployment
-    tags:
-      - "scraper"
-      - "production"  # Add relevant tags
-    description: "Deployment for ScraperFlow, scheduled weekly"
+  - name: scraperflow-deployment # Name of this deployment (appears in Prefect UI)
+    description: "Scrapes all URLs and segments data every Saturday at 9:00 UTC"
+    entrypoint: scraper_flow.py:scraperflow # Entry point to the flow: "<script path>:<flow function>"
+    # Cron schedule for every Saturday at 9:00 AM
     schedule:
-      cron: "0 9 * * 6"  # This sets the flow to run every Saturday at 9 AM
-    flow_name: scraperflow  # The name of your flow function
-    entrypoint: prefectWorkflows/scraper_flow.py:scraperflow  # Path to your flow function
-    parameters: {}  # If your flow takes parameters, add them here
+      cron: "0 9 * * 6" # Cron expression for Saturday 09:00 (UTC)&#8203;:contentReference[oaicite:3]{index=3}
+      timezone: "UTC" # Timezone for the schedule (adjust if needed)
+    parameters: {} # Default parameters (empty since this flow has none)
     work_pool:
-      name: nubot_dataflow  # Specify the name of your work pool
-      work_queue_name: default  # If you have a specific work queue
-      job_variables: {}  # Define any job variables (optional)
-
-  # Example for another deployment, you can add more as needed
-
+      name: "my-cloud-run-pool" # Name of the push work pool for Cloud Run
+      work_queue_name: "default" # Work queue (use "default" or as configured in the pool)
+    tags: [] # (Optional) any tags for the deployment
+    # (Optional) infrastructure overrides can be specified if needed:
+    # infra_overrides:
+    #   image: "us-east1-docker.pkg.dev/<YOUR_GCP_PROJECT>/<YOUR_AR_REPOSITORY>/prefect-scraper:latest"
