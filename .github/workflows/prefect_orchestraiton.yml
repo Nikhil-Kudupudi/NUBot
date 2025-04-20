@@ -27,14 +27,14 @@ jobs:
 
       - name: Build Docker image
         run: |
-          IMAGE_URI="${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/<YOUR_AR_REPOSITORY>/prefect-scraper:latest"
+          IMAGE_URI="${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/prefect-scraper:latest"
           echo "Building image $IMAGE_URI"
           docker build -t "$IMAGE_URI" -f prefectWorkflows/Dockerfile .
           # Note: The context is the repository root (.), adjust path to Dockerfile if needed.
 
       - name: Push Docker image to Artifact Registry
         run: |
-          IMAGE_URI="${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/<YOUR_AR_REPOSITORY>/prefect-scraper:latest"
+          IMAGE_URI="${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/prefect-scraper:latest"
           docker push "$IMAGE_URI"
         # After this step, the image is available in Artifact Registry for Cloud Run to use.
 
