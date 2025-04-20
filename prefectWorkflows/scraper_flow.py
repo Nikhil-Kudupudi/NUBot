@@ -24,22 +24,10 @@ def scraperflow():
 
 if __name__ == "__main__":
 # # Run the flow
-## for cloud
-    # scraperflow.deploy(name="my-first-deployment",
-    #                    work_pool_name="dataflow",
-    #                    image='prefecthq/prefect:2-python3.10',
-    #                    push=True
-    #                   )
+
     try:
-        scraperflow.deploy(
-        name="scraperflow-deployment",
-        work_pool_name="my-cloud-run-pool",
-        image=DockerImage(
-            name="us-docker.pkg.dev/nubot-nikhil/backend-nubot/scraperflow:latest",
-            platform="linux/amd64",
-        ),
-        schedule="0 9 * * 6",
-    )
+
+        scraperflow()
     except Exception as e:
         print(e)
 
