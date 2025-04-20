@@ -2,7 +2,7 @@ name: Deploy Prefect Flow to Cloud Run
 
 on:
   push:
-    branches: [main] # Trigger on push to main (adjust as needed)
+    branches: ["**"] # Trigger on push to main (adjust as needed)
 
 jobs:
   build-and-deploy:
