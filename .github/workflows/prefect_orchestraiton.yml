@@ -49,8 +49,7 @@ jobs:
       - name: Deploy via prefect deploy
         run: |
           cd prefectWorkflows
-          prefect deploy -n scraper-cron-deployment \
-            --override image=$IMAGE_URI           # tell pool to use latest image
+          prefect deploy -n scraper-cron-deployment           # tell pool to use latest image
 
       - name: Deploy Prefect flow
         run: |
