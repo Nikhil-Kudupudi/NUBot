@@ -27,7 +27,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          cd prfectWorkflows
+          cd prefectWorkflows
           IMAGE_URI="${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/prefect-scraper:latest"
           echo "Building image $IMAGE_URI"
           docker build -t "$IMAGE_URI" -f  .
