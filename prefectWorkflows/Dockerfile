@@ -7,6 +7,7 @@ WORKDIR /app
 # Install Python dependencies.
 # If you have a requirements.txt, copy and install it:
 COPY requirements.txt . 
+
 RUN pip install --no-cache-dir -r requirements.txt
 
 # (Alternatively, directly install Prefect and any needed libraries)
