@@ -1,0 +1,100 @@
+/* Markdown Styling */
+.markdown-content {
+    /* Basic reset */
+    margin: 0;
+    padding: 0;
+}
+
+/* Headers */
+.markdown-content h1 {
+    font-size: 1.4rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.markdown-content h2 {
+    font-size: 1.2rem;
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+}
+
+.markdown-content h3 {
+    font-size: 1.1rem;
+    margin-top: 0.3rem;
+    margin-bottom: 0.3rem;
+}
+
+/* Paragraphs and spacing */
+.markdown-content p {
+    margin-bottom: 0.75rem;
+}
+
+/* Lists */
+.markdown-content ul,
+.markdown-content ol {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+}
+
+.markdown-content li {
+    margin-bottom: 0.25rem;
+}
+
+/* Code */
+.markdown-content code {
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+}
+
+.markdown-content pre {
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 0.5rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 0.5rem 0;
+}
+
+.markdown-content pre code {
+    background-color: transparent;
+    padding: 0;
+}
+
+/* Links */
+.markdown-content a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.markdown-content a:hover {
+    text-decoration: underline;
+}
+
+/* Blockquotes */
+.markdown-content blockquote {
+    border-left: 3px solid #ddd;
+    padding-left: 1rem;
+    margin-left: 0;
+    color: #666;
+}
+
+/* Tables */
+.markdown-content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0.5rem 0;
+}
+
+.markdown-content th,
+.markdown-content td {
+    border: 1px solid #ddd;
+    padding: 0.4rem;
+    text-align: left;
+}
+
+.markdown-content th {
+    background-color: rgba(0, 0, 0, 0.05);
+}
