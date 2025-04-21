@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - "**"
-    paths:
-      - "services/frontend1/**"
+    # paths:
+    #   - "services/frontend1/**"
 jobs:
   backend_build:
     runs-on: ubuntu-latest
