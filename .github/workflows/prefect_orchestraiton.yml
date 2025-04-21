@@ -1,0 +1,59 @@
+name: Deploy Prefect Flow to Cloud Run
+
+on:
+  push:
+    branches: ["**"] # Trigger on push to main (adjust as needed)
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Authenticate to Google Cloud using the service account JSON key
+      - name: GCP Authentication
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: "${{ secrets.GCP_KEY }}"
+
+      - name: Setup gcloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Docker login for Artifact Registry
+        run: |
+          gcloud auth configure-docker ${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev
+
+      - name: Build Docker image
+        run: |
+          cd prefectWorkflows
+          IMAGE_URI=${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/prefect-scraper:latest
+          echo "Building image $IMAGE_URI"
+          docker build -t "$IMAGE_URI"   .
+          # Note: The context is the repository root (.), adjust path to Dockerfile if needed.
+
+      - name: Push Docker image to Artifact Registry
+        run: |
+          IMAGE_URI=${{ secrets.GCP_ARTIFACT_REGISTRY_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/backend-nubot/prefect-scraper:latest
+          docker push "$IMAGE_URI"
+        # After this step, the image is available in Artifact Registry for Cloud Run to use.
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Prefect3
+        run: pip install --no-cache-dir "prefect>=3.2.4"
+
+      - name: Deploy via prefect deploy
+        run: |
+          cd prefectWorkflows
+          prefect deploy -n scraper-cron-deployment           # tell pool to use latest image
+
+      - name: Deploy Prefect flow
+        run: |
+          cd prefectWorkflows   # navigate to the folder containing prefect.yaml
+          prefect deploy -n scraperflow-deployment
+        # The -n flag ensures we deploy the specific deployment by name (optional if only one deployment in YAML).
+        # This command reads prefect.yaml and registers/updates the deployment in Prefect Cloud.

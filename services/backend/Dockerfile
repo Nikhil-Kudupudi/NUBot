@@ -16,7 +16,8 @@ WORKDIR /app
 
 # Pre-copy requirements separately for Docker cache efficiency
 COPY runtime-requirements.txt .
-
+RUN pip install --upgrade pip
+RUN pip install "huggingface_hub[hf_xet]"
 # Install Python dependencies
 RUN pip install --no-cache-dir -r runtime-requirements.txt
 

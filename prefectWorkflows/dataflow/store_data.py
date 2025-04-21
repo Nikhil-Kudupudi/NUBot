@@ -5,8 +5,20 @@ load_dotenv(override=True)
 BUCKET_NAME= os.getenv('BUCKET_NAME')
 RAW_DATA_FOLDER= os.getenv('RAW_DATA_FOLDER')
 FAISS_INDEX_FOLDER= os.getenv('FAISS_INDEX_FOLDER')
-GOOGLE_APPLICATION_CREDENTIALS=os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+from google.auth import default
+from google.oauth2 import service_account
 
+# Try to get credentials - works in both Docker and Cloud Run
+try:
+    # First try Application Default Credentials (works in Cloud Run)
+    credentials, project = default()
+except Exception:
+    # Fall back to explicit credentials file (for Docker)
+    credentials_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+    if credentials_path:
+        credentials = service_account.Credentials.from_service_account_file(credentials_path)
+    else:
+        raise Exception("No credentials available")
 def get_blob_from_bucket():
     storage_client = Client()
     bucket = storage_client.bucket(BUCKET_NAME)
@@ -19,7 +31,7 @@ def get_blob_from_bucket():
 
 
 def upload_many_blobs_with_transfer_manager(
-    
+    workers=8
 ):
     """Upload every file in a list to a bucket, concurrently in a process pool.
 

@@ -4,20 +4,8 @@ import NULogo from './NULogo';
 import BotAvatar from './BotAvatar';
 import UserAvatar from './UserAvatar';
 
-// Sample chat responses for the full chat interface
-const CHAT_RESPONSES = {
-  "hello": "Hi there! I'm NUBot. How can I help you with Northeastern University information today?",
-  "hi": "Hello! I'm NUBot, your Northeastern University assistant. What information can I help you find?",
-  "courses": "Northeastern offers a wide range of courses across various disciplines. Are you looking for courses in a specific department or program?",
-  "faculty": "Northeastern has renowned faculty members across all colleges. Which department or professor are you interested in learning about?",
-  "campus": "Northeastern's main campus is located in Boston, MA. We also have regional campuses in Charlotte, Seattle, San Francisco, Vancouver, Portland ME, and more. Which campus would you like to know more about?",
-  "about": "I'm NUBot, an AI assistant designed to help you navigate Northeastern University information more easily. I can answer questions about courses, faculty, campus resources, and more!",
-  "help": "I can help you find information about Northeastern's academic programs, faculty, campus resources, student services, and more. What would you like to know?",
-  "admission": "Northeastern has different application processes for undergraduate, graduate, and professional programs. Would you like information about a specific program's admission requirements?",
-  "events": "Northeastern hosts various events and activities throughout the year. You can check the university calendar or specific department pages for upcoming events. Is there a particular type of event you're interested in?",
-  "registration": "Course registration typically opens several months before the start of each semester. The exact dates depend on your student status and program. Would you like to know more about the registration process?",
-  "housing": "Northeastern offers various on-campus housing options for students, from traditional residence halls to apartment-style accommodations. Off-campus housing resources are also available through the university. Would you like specific information about housing options?",
-};
+// Load API URL from environment variable
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/NuBot';
 
 // Typing indicator component that uses the three dots
 const TypingIndicator = () => {
@@ -47,7 +35,7 @@ const ChatInterface = () => {
     }
   }, [messages, isLoading]); // Also scroll when loading state changes
   
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!userInput.trim() || isLoading) return;
     
     // Add user message to chat
@@ -58,22 +46,33 @@ const ChatInterface = () => {
     // Set loading state
     setIsLoading(true);
     
-    // Process bot response with delay to simulate thinking/processing
-    setTimeout(() => {
-      const lowerCaseInput = userMessage.toLowerCase();
-      let botResponse = "I'm here to help with anything related to Northeastern University. What else would you like to know?";
+    try {
+      // Make API call to get response
+      const response = await fetch(`${API_URL}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: userMessage }),
+      });
       
-      // Check for keyword matches
-      for (const [keyword, response] of Object.entries(CHAT_RESPONSES)) {
-        if (lowerCaseInput.includes(keyword)) {
-          botResponse = response;
-          break;
-        }
+      if (!response.ok) {
+        throw new Error(`API request failed with status: ${response.status}`);
       }
       
-      setMessages(prev => [...prev, { sender: 'bot', message: botResponse }]);
+      const data = await response.json();
+      // The Flask backend returns the response directly, not wrapped in a field
+      setMessages(prev => [...prev, { sender: 'bot', message: data }]);
+    } catch (error) {
+      console.error('Error fetching response:', error);
+      // Add error message to chat
+      setMessages(prev => [...prev, {
+        sender: 'bot',
+        message: "I'm sorry, I'm having trouble connecting to my knowledge base. Please try again later."
+      }]);
+    } finally {
       setIsLoading(false);
-    }, 1500); // Delay to simulate processing - adjust as needed
+    }
   };
   
   const handleKeyPress = (e) => {

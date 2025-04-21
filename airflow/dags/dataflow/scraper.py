@@ -13,7 +13,8 @@ load_dotenv(override=True)
 BASE_URL = os.getenv('BASE_URL')
 MAX_DEPTH = int(os.getenv('MAX_DEPTH'))             # Maximum recursion depth (base URL is depth 0)
 CONCURRENT_REQUESTS = int(os.getenv('CONCURRENT_REQUESTS'))  # Maximum number of concurrent requests
-GOOGLE_APPLICATION_CREDENTIALS =os.getenv('GOOGLE_APPLICATION_CREDENTIALS ')
+from google.auth import default
+credentials, project = default()
 # Create folder for JSON data
 DATA_FOLDER = "scraped_data"
 if not os.path.exists(DATA_FOLDER):
