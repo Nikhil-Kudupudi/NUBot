@@ -177,6 +177,7 @@ mlflow-artifacts/
 # PyPI configuration file
 .pypirc
 
-*.html
+
 
 *.json
+!package.json
