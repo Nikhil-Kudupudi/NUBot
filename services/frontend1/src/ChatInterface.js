@@ -1,8 +1,12 @@
+// Ensure we import the CSS file for markdown styling
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 import NULogo from './NULogo';
 import BotAvatar from './BotAvatar';
 import UserAvatar from './UserAvatar';
+// Import the markdown CSS
+import './markdown-styles.css';
 
 // Load API URL from environment variable
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/NuBot';
@@ -61,8 +65,11 @@ const ChatInterface = () => {
       }
       
       const data = await response.json();
-      // The Flask backend returns the response directly, not wrapped in a field
-      setMessages(prev => [...prev, { sender: 'bot', message: data }]);
+      // Check if the response is a string or an object
+      const botResponse = typeof data === 'string' ? data : 
+                         (data.response ? data.response : 
+                         (typeof data === 'object' ? JSON.stringify(data) : String(data)));
+      setMessages(prev => [...prev, { sender: 'bot', message: botResponse }]);
     } catch (error) {
       console.error('Error fetching response:', error);
       // Add error message to chat
@@ -103,7 +110,31 @@ const ChatInterface = () => {
         {messages.map((msg, index) => (
           <div key={index} className={`message ${msg.sender}`}>
             {msg.sender === 'bot' && <div className="bot-avatar"><BotAvatar /></div>}
-            <div className="bubble">{msg.message}</div>
+            <div className="bubble markdown-content">
+              {msg.sender === 'bot' ? (
+                <ReactMarkdown components={{
+                  // Override the code component to add proper styling
+                  code: ({node, inline, className, children, ...props}) => {
+                    const match = /language-(\w+)/.exec(className || '');
+                    return !inline ? (
+                      <pre className={match ? `language-${match[1]}` : ''}>
+                        <code className={match ? `language-${match[1]}` : ''} {...props}>
+                          {children}
+                        </code>
+                      </pre>
+                    ) : (
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
+                    );
+                  }
+                }}>
+                  {msg.message}
+                </ReactMarkdown>
+              ) : (
+                msg.message
+              )}
+            </div>
             {msg.sender === 'user' && <div className="user-avatar"><UserAvatar /></div>}
           </div>
         ))}
